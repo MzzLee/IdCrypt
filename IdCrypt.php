@@ -2,7 +2,7 @@
 /**
 * 数字ID与字符串ID之间的转换
 */
-class IdCrypt {
+class Bvs_Util_IdCrypt {
     /**
      * @const 随机加密串
      */
@@ -22,11 +22,11 @@ class IdCrypt {
     public static function encode($intId, $intCryptLen = 16){
         $strKey = '';
         /** 有效加密长度 */
-        $intCryptKeyLen =  self::CRYPT_KEY_LEN - $intCryptLen;
+        $intCryptKeyLen =  self::CRYPT_KEY_LEN - $intCryptLen + 1;
         /** 用于加密的字符串集合 */
-        $arrCryptMap    = str_split(substr(self::CRYPT_KEY, 0, $intCryptKeyLen + 1));
+        $arrCryptMap    = str_split(substr(self::CRYPT_KEY, 0, $intCryptKeyLen));
         /** 用于补位的字符串集合 */
-        $strFillKey     = substr(self::CRYPT_KEY, $intCryptKeyLen + 1);
+        $strFillKey     = substr(self::CRYPT_KEY, $intCryptKeyLen);
 
         /** 转换进制（取决于去掉补位字符串后的剩余长度）*/
         $intHex         = $intCryptKeyLen;
@@ -69,21 +69,20 @@ class IdCrypt {
         $intId       = 0;
         $intCryptLen = strlen($strId);
         /** 有效加密长度 */
-        $intCryptKeyLen =  self::CRYPT_KEY_LEN - $intCryptLen;
+        $intCryptKeyLen =  self::CRYPT_KEY_LEN - $intCryptLen + 1;
         /** 用于补位的字符串集合 */
-        $strFillKey     = substr(self::CRYPT_KEY, $intCryptKeyLen + 1);
+        $strFillKey     = substr(self::CRYPT_KEY, $intCryptKeyLen);
         /** 计算补位字符串位置 */
         $intCryptPos    = 1;
         while($intCryptPos < $intCryptLen) {
             if(strstr($strFillKey, substr($strId, $intCryptPos))) {
                 break;
             }
-
             $intCryptPos++;
         }
 
         /** 计算进制 */
-        $intHex         = self::CRYPT_KEY_LEN - $intCryptLen;
+        $intHex         = $intCryptKeyLen;
         /** 获取真实加密串 */
         $strCryptKey    = substr($strId, 0, $intCryptPos);
         /** 获取加密串的位置并根据位置，转换成10进制 */
@@ -94,6 +93,7 @@ class IdCrypt {
         }
         return $intId;
     }
+
 }
 
 ?>
